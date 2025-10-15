@@ -1,0 +1,49 @@
+{% extends 'todos/base.html' %}
+
+{% block title %}Todo List{% endblock %}
+
+{% block content %}
+<h1>📝 My Todos</h1>
+
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'create_todo' %}" class="btn btn-primary">+ Add New Todo</a>
+</div>
+
+{% if todos %}
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        {% for todo in todos %}
+        <div style="border: 1px solid #ddd; padding: 20px; border-radius: 10px; background: #f8f9fa;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <h3 
+                        {% if todo.completed %}
+                            style="color: #333; margin-bottom: 10px; text-decoration: line-through; opacity: 0.6;"
+                        {% else %}
+                            style="color: #333; margin-bottom: 10px;"
+                        {% endif %}
+                    >
+                        {{ todo.title }}
+                    </h3>
+                    {% if todo.description %}
+                        <p style="color: #666; margin-bottom: 10px;">{{ todo.description }}</p>
+                    {% endif %}
+                    <small style="color: #999;">Created: {{ todo.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+                <div style="display: flex; gap: 10px; flex-direction: column;">
+                    <form method="POST" action="{% url 'toggle_complete' todo.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn {% if todo.completed %}btn-success{% else %}btn-primary{% endif %}" style="width: 100%;">
+                            {% if todo.completed %}✓ Completed{% else %}Mark Complete{% endif %}
+                        </button>
+                    </form>
+                    <a href="{% url 'update_todo' todo.pk %}" class="btn btn-primary" style="text-align: center;">Edit</a>
+                    <a href="{% url 'delete_todo' todo.pk %}" class="btn btn-danger" style="text-align: center;">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p style="text-align: center; color: #666; margin: 40px 0;">No todos yet. Create your first one!</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:17
+    container_name: todo_postgres
+    environment:
+      POSTGRES_DB: todos_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: BhuSak143@
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - todo_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+  web:
+    build: .
+    container_name: todo_web
+    env_file: .env
+    command: sh -c "sleep 3 && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - todo_network
+volumes:
+  postgres_data:
+networks:
+  todo_network:
