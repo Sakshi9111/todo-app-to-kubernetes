@@ -196,7 +196,7 @@ spec:
   - protocol: TCP
     port: 8000
     targetPort: 8000
-  type: LoadBalancer
+  type: ClusterIP
 
 ---
 # ingress.yaml (Optional - if you have Ingress controller)
@@ -207,6 +207,7 @@ metadata:
   namespace: todo-app
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
   rules:
