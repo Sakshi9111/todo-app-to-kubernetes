@@ -20,7 +20,7 @@ spec:
 #        imagePullPolicy: IfNotPresent
 #        command: ['sh', '-c', 'until nc -z postgres-service 5432; do echo waiting for postgres; sleep 2; done;']
       - name: migrate
-        image: 98543218/todo-web:latest
+        image: 98543218/todo-web
         imagePullPolicy: Always
         command: ['python', 'manage.py', 'migrate']
         envFrom:
@@ -28,7 +28,7 @@ spec:
             name: django-secret
       containers:
       - name: django
-        image: 98543218/todo-web:latest
+        image: 98543218/todo-web
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
